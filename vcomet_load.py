@@ -1,3 +1,4 @@
+from asyncio import events
 from database.milvus import MilvusAPI
 from database.arangodb import DatabaseConnector
 import torch
@@ -28,6 +29,7 @@ class VCOMET_LOAD:
     def load_vit_vcomet_place(self):
         query = 'FOR doc IN vcomet_kg RETURN DISTINCT doc.place'
         cursor = self.vc_db.aql.execute(query)
+        places = []
         for vc in cursor:
             if len(vc.split()) < 9:  
                 vector = self.vlmodel.clip_encode_text(vc)
@@ -40,14 +42,18 @@ class VCOMET_LOAD:
                             'stage': 'none',
                             'frame_number': 'none',
                             'sentence': vc,
+                            'vector': vector
                         }
-                self.milvus_places.insert_vectors([vector], [meta])
+                places.append(meta)
+            return(places)
+                #self.milvus_places.insert_vectors([vector], [meta])
                 #print(meta)
                 #input()
     
     def load_vit_vcomet_events(self):
         query = 'FOR doc IN vcomet_kg RETURN DISTINCT doc.event'
         cursor = self.vc_db.aql.execute(query)
+        events = []
         for vc in cursor:
             if len(vc.split()) < 9:  
                 vector = self.vlmodel.clip_encode_text(vc)
@@ -60,10 +66,13 @@ class VCOMET_LOAD:
                             'stage': 'none',
                             'frame_number': 'none',
                             'sentence': vc,
+                            'vector': vector
                         }
-                self.milvus_events.insert_vectors([vector], [meta])
+                events.append(meta)
+                #self.milvus_events.insert_vectors([vector], [meta])
                 #print(meta)
                 #input()
+        return(events)
 
     def load_vit_vcomet_actions(self):    
         query = 'FOR doc IN vcomet_kg RETURN DISTINCT doc'
@@ -81,7 +90,7 @@ class VCOMET_LOAD:
                 for after in doc['after']:
                     actions.append(after)
         actions = list(dict.fromkeys(actions))
-       
+        actions_ = []
         for vc in actions:
             if len(vc.split()) < 9: 
                 #print(vc) 
@@ -94,9 +103,10 @@ class VCOMET_LOAD:
                             'stage': 'none',
                             'frame_number': 'none',
                             'sentence': vc,
+                            'vector': vector
                         }
-                self.milvus_actions.insert_vectors([vector.tolist()[0]], [meta])
-
+                #self.milvus_actions.insert_vectors([vector.tolist()[0]], [meta])
+                actions_.append(meta)
            
 def main():
     kg = VCOMET_LOAD()
