@@ -42,7 +42,7 @@ class VCOMET_LOAD:
                             'sentence': vc,
                         }
                 self.milvus_places.insert_vectors([vector], [meta])
-                print(meta)
+                #print(meta)
                 #input()
     
     def load_vit_vcomet_events(self):
@@ -61,8 +61,8 @@ class VCOMET_LOAD:
                             'frame_number': 'none',
                             'sentence': vc,
                         }
-                #self.milvus_events.insert_vectors([vector], [meta])
-                print(meta)
+                self.milvus_events.insert_vectors([vector], [meta])
+                #print(meta)
                 #input()
 
     def load_vit_vcomet_actions(self):    
@@ -84,7 +84,7 @@ class VCOMET_LOAD:
        
         for vc in actions:
             if len(vc.split()) < 9: 
-                print(vc) 
+                #print(vc) 
                 vector = self.vlmodel.encode_text(vc, class_name='clip_vit')
                 print(len(vector.tolist()[0]))
                 meta = {
