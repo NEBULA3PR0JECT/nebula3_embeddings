@@ -20,7 +20,11 @@ class VCOMET_LOAD:
         self.vc_db = dbc.connect_db("nebula_visualcomet")
         self.vlmodel = CLIP_API(vlm_name='vit')
 
-    
+    def drop_load(self):
+        self.milvus_events.drop_database()
+        self.milvus_places.drop_database()
+        self.milvus_actions.drop_database() 
+
     def load_vit_vcomet_place(self):
         query = 'FOR doc IN vcomet_kg RETURN DISTINCT doc.place'
         cursor = self.vc_db.aql.execute(query)
@@ -38,6 +42,26 @@ class VCOMET_LOAD:
                             'sentence': vc,
                         }
                 self.milvus_places.insert_vectors([vector], [meta])
+                print(meta)
+                #input()
+    
+    def load_vit_vcomet_events(self):
+        query = 'FOR doc IN vcomet_kg RETURN DISTINCT doc.event'
+        cursor = self.vc_db.aql.execute(query)
+        for vc in cursor:
+            if len(vc.split()) < 9:  
+                vector = self.vlmodel.clip_encode_text(vc)
+                #print(vector)
+                #print(len(vector))
+                meta = {
+                            'filename': 'none',
+                            'movie_id':'none',
+                            'nebula_movie_id': 'none',
+                            'stage': 'none',
+                            'frame_number': 'none',
+                            'sentence': vc,
+                        }
+                #self.milvus_events.insert_vectors([vector], [meta])
                 print(meta)
                 #input()
 
