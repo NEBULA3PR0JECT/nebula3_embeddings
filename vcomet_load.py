@@ -45,7 +45,7 @@ class VCOMET_LOAD:
                             'vector': vector
                         }
                 places.append(meta)
-            return(places)
+        return(places)
                 #self.milvus_places.insert_vectors([vector], [meta])
                 #print(meta)
                 #input()
@@ -107,6 +107,7 @@ class VCOMET_LOAD:
                         }
                 #self.milvus_actions.insert_vectors([vector.tolist()[0]], [meta])
                 actions_.append(meta)
+        return (actions_)
            
 def main():
     kg = VCOMET_LOAD()
